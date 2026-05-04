@@ -254,13 +254,124 @@
 
         // Technologijų masyvas (state: 'locked', 'available', 'purchased')
         const technologies = [
-            { id: 1, year: -10000, price: 10, name: "Ugnies kontrolė", icon: "🔥", desc: "Suteikė šilumą, apsaugą ir leido kepti maistą. Civilizacijos aušra.", boost: 2, state: "locked" },
-            { id: 2, year: -8000, price: 50, name: "Žemdirbystė", icon: "🌾", desc: "Perėjimas nuo klajoklių medžiotojų prie sėslaus gyvenimo būdo ir kaimų kūrimosi.", boost: 5, state: "locked" },
-            { id: 3, year: -3500, price: 250, name: "Ratas", icon: "🛞", desc: "Revoliucionizavo transportą, prekybą ir inžineriją Mesopotamijoje.", boost: 15, state: "locked" },
-            { id: 4, year: -1200, price: 1000, name: "Geležies apdirbimas", icon: "⚒️", desc: "Leido gaminti patvaresnius įrankius ir ginklus, pradėjo Geležies amžių.", boost: 40, state: "locked" },
-            { id: 5, year: 1440, price: 5000, name: "Spausdinimo presas", icon: "📖", desc: "Johanneso Gutenbergo išradimas leido masiškai platinti žinias visoje Europoje.", boost: 150, state: "locked" },
-            { id: 6, year: 1879, price: 20000, name: "Elektros lemputė", icon: "💡", desc: "Prailgino darbo ir laisvalaikio valandas, visiškai pakeitė žmonijos rutiną.", boost: 600, state: "locked" }
-        ];
+    // --- AKMENS AMŽIUS (Priešistorė) ---
+    { id: 1, year: -10000, price: 10, name: "Ugnies kontrolė", icon: "🔥", desc: "Suteikė šilumą, apsaugą ir leido kepti maistą. Civilizacijos aušra.", boost: 2, state: "locked" },
+    { id: 2, year: -9000, price: 25, name: "Akmens skeltuvai", icon: "⚒️", desc: "Pirmieji įrankiai medžioklei ir darbui su kailiais.", boost: 3, state: "locked" },
+    { id: 3, year: -8500, price: 50, name: "Lankas ir strėlės", icon: "🏹", desc: "Revoliucionizavo medžioklę, leidžiant saugiai pulti iš toli.", boost: 5, state: "locked" },
+    { id: 4, year: -8000, price: 100, name: "Žemdirbystė", icon: "🌾", desc: "Žmonės nustojo klajoti ir pradėjo auginti maistą patys.", boost: 8, state: "locked" },
+    { id: 5, year: -7500, price: 150, name: "Keramika", icon: "🏺", desc: "Molis leido saugoti vandenį ir grūdus ilgesnį laiką.", boost: 10, state: "locked" },
+    { id: 6, year: -7000, price: 200, name: "Gyvulių prijaukinimas", icon: "🐕", desc: "Šunys, avys ir ožkos tapo ištikimais palydovais ir maisto šaltiniu.", boost: 12, state: "locked" },
+    { id: 7, year: -6000, price: 300, name: "Audimas", icon: "🧶", desc: "Pirmieji drabužiai iš augalinių skaidulų ir vilnos.", boost: 15, state: "locked" },
+    { id: 8, year: -5000, price: 450, name: "Vario lydymas", icon: "🧪", desc: "Pirmieji žingsniai į metalurgijos pasaulį.", boost: 20, state: "locked" },
+    { id: 9, year: -4500, price: 600, name: "Drėkinimo sistemos", icon: "🌊", desc: "Kanalai leido nukreipti upių vandenį į sausus laukus.", boost: 25, state: "locked" },
+    { id: 10, year: -4000, price: 800, name: "Plūgas", icon: "🚜", desc: "Jaučių traukiamas plūgas leido įdirbti didelius žemės plotus.", boost: 35, state: "locked" },
+
+    // --- SENOVĖS CIVILIZACIJOS ---
+    { id: 11, year: -3500, price: 1200, name: "Ratas", icon: "🛞", desc: "Transporto ir mechanikos pagrindas, pakeitęs judėjimą amžiams.", boost: 50, state: "locked" },
+    { id: 12, year: -3200, price: 1500, name: "Raštas", icon: "📜", desc: "Klinoraštis ir hieroglifai leido fiksuoti istoriją ir prekybą.", boost: 60, state: "locked" },
+    { id: 13, year: -3000, price: 2000, name: "Burinis laivas", icon: "⛵", desc: "Vėjas tapo jėga, leidžiančia keliauti per jūras.", boost: 80, state: "locked" },
+    { id: 14, year: -2500, price: 3000, name: "Papirusas", icon: "📄", desc: "Lengvesnė medžiaga rašymui nei molio lentelės.", boost: 100, state: "locked" },
+    { id: 15, year: -2000, price: 4500, name: "Bronzos amžius", icon: "⚔️", desc: "Vario ir alavo lydinys sukūrė galingus ginklus ir įrankius.", boost: 150, state: "locked" },
+    { id: 16, year: -1800, price: 6000, name: "Abakas", icon: "🧮", desc: "Pirmasis skaičiuotuvas sudėtingoms matematinėms operacijoms.", boost: 200, state: "locked" },
+    { id: 17, year: -1500, price: 8000, name: "Geležies lydymas", icon: "🔨", desc: "Geležis padarė įrankius pigesnius ir prieinamus visiems.", boost: 300, state: "locked" },
+    { id: 18, year: -1000, price: 11000, name: "Monetos", icon: "🪙", desc: "Standartizuoti pinigai palengvino prekybą tarp miestų.", boost: 450, state: "locked" },
+    { id: 19, year: -800, price: 15000, name: "Vandens ratas", icon: "🎡", desc: "Vandens energija pradėta naudoti grūdų malimui.", boost: 600, state: "locked" },
+    { id: 20, year: -500, price: 20000, name: "Akvedukai", icon: "🏛️", desc: "Romėnų inžinerijos stebuklas, atnešęs vandenį į miestus.", boost: 800, state: "locked" },
+
+    // --- VIDURAMŽIAI ---
+    { id: 21, year: 100, price: 30000, name: "Popierius", icon: "🧻", desc: "Kinijoje išrastas popierius tapo pagrindine žinių laikmena.", boost: 1200, state: "locked" },
+    { id: 22, year: 600, price: 45000, name: "Vėjo malūnas", icon: "🌬️", desc: "Išmokta išnaudoti vėjo jėgą ten, kur nėra upių.", boost: 1800, state: "locked" },
+    { id: 23, year: 800, price: 65000, name: "Parakas", icon: "🎆", desc: "Išradimas, kuris visam laikui pakeitė karybą ir fejerverkus.", boost: 2500, state: "locked" },
+    { id: 24, year: 1000, price: 90000, name: "Kompasas", icon: "🧭", desc: "Leido jūreiviams orientuotis net ir nematant žvaigždžių.", boost: 3500, state: "locked" },
+    { id: 25, year: 1200, price: 120000, name: "Akiniai", icon: "👓", desc: "Pagalba regėjimui prailgino mokslininkų ir raštininkų darbingumą.", boost: 4500, state: "locked" },
+    { id: 26, year: 1300, price: 160000, name: "Mechaninis laikrodis", icon: "⏰", desc: "Laikas tapo matuojamas tiksliai, o ne pagal saulę.", boost: 6000, state: "locked" },
+    { id: 27, year: 1440, price: 220000, name: "Spausdinimo presas", icon: "🖨️", desc: "Gutenbergo išradimas pradėjo masinį švietimą.", boost: 8500, state: "locked" },
+    { id: 28, year: 1590, price: 300000, name: "Mikroskopas", icon: "🔬", desc: "Atsivėrė nematomas mažųjų organizmų pasaulis.", boost: 11000, state: "locked" },
+    { id: 29, year: 1608, price: 400000, name: "Teleskopas", icon: "🔭", desc: "Žvilgsnis į žvaigždes atskleidė tikrąją visatos sandarą.", boost: 15000, state: "locked" },
+    { id: 30, year: 1698, price: 550000, name: "Garų mašina", icon: "🚂", desc: "Pirmieji žingsniai link pramonės revoliucijos.", boost: 20000, state: "locked" },
+
+    // --- PRAMONĖS REVOLIUCIJA ---
+    { id: 31, year: 1760, price: 750000, name: "Audimo staklės", icon: "🧵", desc: "Masinė tekstilės gamyba padarė drabužius prieinamus visiems.", boost: 28000, state: "locked" },
+    { id: 32, year: 1796, price: 1000000, name: "Vakcina", icon: "💉", desc: "Jennerio atrasta vakcina nuo raupų pradėjo modernią mediciną.", boost: 35000, state: "locked" },
+    { id: 33, year: 1804, price: 1400000, name: "Lokomotyvas", icon: "🚄", desc: "Geležinkeliai sujungė miestus ir pagreitino krovinių gabenimą.", boost: 45000, state: "locked" },
+    { id: 34, year: 1826, price: 1900000, name: "Fotografija", icon: "📸", desc: "Pirmą kartą akimirka buvo užfiksuota amžiams.", boost: 55000, state: "locked" },
+    { id: 35, year: 1837, price: 2500000, name: "Telegrafas", icon: "📟", desc: "Informacija pradėjo keliauti greičiau už bet kokį žirgą.", boost: 70000, state: "locked" },
+    { id: 36, year: 1844, price: 3200000, name: "Anestezija", icon: "💤", desc: "Operacijos tapo neskausmingos, gelbstint tūkstančius gyvybių.", boost: 90000, state: "locked" },
+    { id: 37, year: 1856, price: 4200000, name: "Plieno gamyba", icon: "🏗️", desc: "Bessemerio procesas leido statyti dangoraižius ir tiltus.", boost: 120000, state: "locked" },
+    { id: 38, year: 1860, price: 5500000, name: "Vidaus degimo variklis", icon: "⚙️", desc: "Naftos energija pakeitė arklių galią.", boost: 160000, state: "locked" },
+    { id: 39, year: 1876, price: 7200000, name: "Telefonas", icon: "📞", desc: "Balsas gali sklisti laidais per tūkstančius kilometrų.", boost: 210000, state: "locked" },
+    { id: 40, year: 1879, price: 9500000, name: "Elektros lemputė", icon: "💡", desc: "Naktis virto diena, o pramonė pradėjo dirbti visą parą.", boost: 280000, state: "locked" },
+
+    // --- XX AMŽIUS ---
+    { id: 41, year: 1895, price: 12500000, name: "Radijas", icon: "📻", desc: "Belaidė komunikacija tapo masine informavimo priemone.", boost: 380000, state: "locked" },
+    { id: 42, year: 1903, price: 16500000, name: "Lėktuvas", icon: "✈️", desc: "Padangės buvo užkariautos, o pasaulis tapo mažesnis.", boost: 520000, state: "locked" },
+    { id: 43, year: 1908, price: 22000000, name: "Konvejeris", icon: "🏭", desc: "Henry Fordas padarė automobilius prieinamus vidurinei klasei.", boost: 700000, state: "locked" },
+    { id: 44, year: 1927, price: 29000000, name: "Televizija", icon: "📺", desc: "Vaizdas ir garsas pasiekė kiekvieno namus.", boost: 950000, state: "locked" },
+    { id: 45, year: 1928, price: 38000000, name: "Penicilinas", icon: "🍄", desc: "Atrasti antibiotikai nugalėjo mirtinas infekcijas.", boost: 1300000, state: "locked" },
+    { id: 46, year: 1938, price: 50000000, name: "Branduolinė fizika", icon: "⚛️", desc: "Atomo skaldymas suteikė milžinišką, nors ir pavojingą energiją.", boost: 1800000, state: "locked" },
+    { id: 47, year: 1947, price: 68000000, name: "Tranzistorius", icon: "🔌", desc: "Modernios elektronikos ir kompiuterių eros pagrindas.", boost: 2500000, state: "locked" },
+    { id: 48, year: 1957, price: 90000000, name: "Palydovas", icon: "🛰️", desc: "Sputnik 1 išėjimas į orbitą pradėjo kosmoso erą.", boost: 3500000, state: "locked" },
+    { id: 49, year: 1961, price: 120000000, name: "Žmogus kosmose", icon: "👨‍🚀", desc: "Jurijus Gagarinas įrodė, kad žmogus gali išgyventi už Žemės ribų.", boost: 4800000, state: "locked" },
+    { id: 50, year: 1969, price: 160000000, name: "Nusileidimas Mėnulyje", icon: "🌑", desc: "Mažas žingsnis žmogui, bet didžiulis šuolis žmonijai.", boost: 6500000, state: "locked" },
+
+    // --- INFORMACINĖ ERA ---
+    { id: 51, year: 1971, price: 220000000, name: "Mikroprocesorius", icon: "🔳", desc: "Visas kompiuteris vienoje lusto dalyje.", boost: 9000000, state: "locked" },
+    { id: 52, year: 1973, price: 300000000, name: "Mobilusis telefonas", icon: "📱", desc: "Bendravimas tapo įmanomas bet kur ir bet kada.", boost: 13000000, state: "locked" },
+    { id: 53, year: 1983, price: 420000000, name: "Internetas", icon: "🌐", desc: "Visų pasaulio kompiuterių tinklas pakeitė viską.", boost: 18000000, state: "locked" },
+    { id: 54, year: 1990, price: 600000000, name: "Pasaulinis tinklas (WWW)", icon: "🕸️", desc: "Informacija tapo pasiekiama vienu pelės paspaudimu.", boost: 26000000, state: "locked" },
+    { id: 55, year: 1996, price: 850000000, name: "Klonavimas", icon: "🐑", desc: "Avytė Dolė įrodė, kad gyvybę galima atkurti laboratorijoje.", boost: 38000000, state: "locked" },
+    { id: 56, year: 1998, price: 1200000000, name: "Paieškos varikliai", icon: "🔍", desc: "Google padėjo rasti adatą informacijos šieno kupetoje.", boost: 55000000, state: "locked" },
+    { id: 57, year: 2004, price: 1700000000, name: "Socialiniai tinklai", icon: "👥", desc: "Žmonija susijungė į vieną didelį skaitmeninį kaimą.", boost: 80000000, state: "locked" },
+    { id: 58, year: 2007, price: 2500000000, name: "Išmanusis telefonas", icon: "🤳", desc: "Kompiuteris tavo kišenėje tapo tavo asmenybės dalimi.", boost: 120000000, state: "locked" },
+    { id: 59, year: 2009, price: 3800000000, name: "Blockchain", icon: "⛓️", desc: "Decentralizuoti pinigai ir pasitikėjimo technologija.", boost: 180000000, state: "locked" },
+    { id: 60, year: 2012, price: 5500000000, name: "CRISPR", icon: "✂️", desc: "Genų redagavimas leido perrašyti gyvybės kodą.", boost: 280000000, state: "locked" },
+
+    // --- DABARTIS IR ARTIMA ATEITIS ---
+    { id: 61, year: 2020, price: 8500000000, name: "Kvantinė kompiuterija", icon: "🔮", desc: "Skaičiavimai, kurie anksčiau truko tūkstantmečius, dabar trunka sekundes.", boost: 450000000, state: "locked" },
+    { id: 62, year: 2023, price: 13000000000, name: "Generatyvinis AI", icon: "🤖", desc: "Dirbtinis intelektas pradėjo kurti tekstus, meną ir kodą.", boost: 700000000, state: "locked" },
+    { id: 63, year: 2025, price: 20000000000, name: "6G tinklas", icon: "📶", desc: "Duomenų perdavimas tapo greitesnis už žmogaus mintį.", boost: 1100000000, state: "locked" },
+    { id: 64, year: 2028, price: 32000000000, name: "Autonominiai miestai", icon: "🏙️", desc: "Transportas ir logistika valdomi be žmogaus įsikišimo.", boost: 1800000000, state: "locked" },
+    { id: 65, year: 2030, price: 50000000000, name: "Mėnulio bazė", icon: "🏠", desc: "Nuolatinė žmonių gyvenvietė už Žemės ribų.", boost: 3000000000, state: "locked" },
+    { id: 66, year: 2035, price: 80000000000, name: "Termobranduolinė sintezė", icon: "☀️", desc: "Neribota ir švari energija, kopijuojanti saulės procesus.", boost: 5000000000, state: "locked" },
+    { id: 67, year: 2040, price: 130000000000, name: "Nanomedicina", icon: "🦠", desc: "Robotai kraujyje naikina ligas ląstelių lygiu.", boost: 8500000000, state: "locked" },
+    { id: 68, year: 2045, price: 210000000000, name: "Skaitmeninė sąmonė", icon: "🧠", desc: "Galimybė išsaugoti mintis debesyje.", boost: 14000000000, state: "locked" },
+    { id: 69, year: 2050, price: 350000000000, name: "Marso kolonizacija", icon: "🚀", desc: "Žmonija oficialiai tapo tarpplanetine rūšimi.", boost: 25000000000, state: "locked" },
+    { id: 70, year: 2060, price: 600000000000, name: "Asteroidų kasyba", icon: "💎", desc: "Ištekliai iš kosmoso padarė deficitą praeitimi.", boost: 45000000000, state: "locked" },
+
+    // --- TOLIMA ATEITIS (Mokslinė fantastika) ---
+    { id: 71, year: 2100, price: 1000000000000, name: "Daisono spiečius", icon: "🛰️", desc: "Saulės energijos rinkimas tiesiogiai orbitoje.", boost: 80000000000, state: "locked" },
+    { id: 72, year: 2150, price: 2000000000000, name: "Erdvėlaikio šuolis", icon: "🌌", desc: "Kelionės tarp žvaigždžių sistemų akimirksniu.", boost: 150000000000, state: "locked" },
+    { id: 73, year: 2200, price: 5000000000000, name: "Terraformavimas", icon: "🌍", desc: "Planetų atmosferos keitimas, paverčiant jas tinkamomis gyventi.", boost: 300000000000, state: "locked" },
+    { id: 74, year: 2300, price: 12000000000000, name: "Kardashovo I tipas", icon: "⚡", desc: "Civilizacija pilnai valdo visą savo planetos energiją.", boost: 700000000000, state: "locked" },
+    { id: 75, year: 2500, price: 30000000000000, name: "Antimaterijos variklis", icon: "💥", desc: "Galingiausias įmanomas kuro šaltinis visatoje.", boost: 2000000000000, state: "locked" },
+    { id: 76, year: 2800, price: 80000000000000, name: "Galaktinis internetas", icon: "📡", desc: "Ryšys per visą paukščių taką be vėlavimo.", boost: 5000000000000, state: "locked" },
+    { id: 77, year: 3000, price: 200000000000000, name: "Laiko manipuliacija", icon: "⏳", desc: "Laiko tėkmės sulėtinimas svarbiems procesams.", boost: 15000000000000, state: "locked" },
+    { id: 78, year: 3500, price: 500000000000000, name: "Kardashovo II tipas", icon: "🌟", desc: "Visos saulės sistemos energijos valdymas.", boost: 40000000000000, state: "locked" },
+    { id: 79, year: 4000, price: 1000000000000000, name: "Dirbtinės žvaigždės", icon: "✨", desc: "Kurti saules ten, kur tamsu.", boost: 100000000000000, state: "locked" },
+    { id: 80, year: 5000, price: 3000000000000000, name: "Visatos entropijos stabdymas", icon: "🌀", desc: "Technologija, skirta išlaikyti visatą gyvą amžinai.", boost: 500000000000000, state: "locked" },
+
+    // --- PAPILDOMOS MAŽOSIOS TECHNOLOGIJOS (Užpildymui) ---
+    { id: 81, year: -2500, price: 2800, name: "Stiklas", icon: "🍶", desc: "Skaidri medžiaga prabangiems indams.", boost: 90, state: "locked" },
+    { id: 82, year: -500, price: 18000, name: "Pašto sistema", icon: "📮", desc: "Persų išrasta žinių perdavimo sistema raiteliais.", boost: 500, state: "locked" },
+    { id: 83, year: 105, price: 32000, name: "Popieriaus masė", icon: "📜", desc: "Masinė popieriaus gamyba Kinijoje.", boost: 1300, state: "locked" },
+    { id: 84, year: 1100, price: 100000, name: "Popieriniai pinigai", icon: "💵", desc: "Pakeitė sunkias monetas prekyboje.", boost: 4000, state: "locked" },
+    { id: 85, year: 1783, price: 900000, name: "Oro balionas", icon: "🎈", desc: "Pirmasis skrydis virš žemės paviršiaus.", boost: 32000, state: "locked" },
+    { id: 86, year: 1839, price: 2800000, name: "Vulkanizuota guma", icon: "🛞", desc: "Padangos ir izoliacija tapo įmanomos.", boost: 80000, state: "locked" },
+    { id: 87, year: 1885, price: 11000000, name: "Automobilis", icon: "🚗", desc: "Benzino varoma transporto priemonė laisvumui.", boost: 320000, state: "locked" },
+    { id: 88, year: 1945, price: 55000000, name: "Mikrobangų krosnelė", icon: "🍲", desc: "Atsitiktinis išradimas, pakeitęs virtuvę.", boost: 2000000, state: "locked" },
+    { id: 89, year: 1960, price: 110000000, name: "Lazeris", icon: "🔦", desc: "Koncentruota šviesa medicinai ir pramonei.", boost: 4200000, state: "locked" },
+    { id: 90, year: 1989, price: 500000000, name: "GPS", icon: "📍", desc: "Niekas nebegali pasiklysti šiame pasaulyje.", boost: 22000000, state: "locked" },
+    { id: 91, year: 2010, price: 4500000000, name: "iPad", icon: "平板", desc: "Planšetiniai kompiuteriai pakeitė spaudą.", boost: 220000000, state: "locked" },
+    { id: 92, year: 2015, price: 7000000000, name: "Daugkartinės raketos", icon: "🚀", desc: "SpaceX padarė kosmosą pigesnį.", boost: 350000000, state: "locked" },
+    { id: 93, year: 2021, price: 10000000000, name: "mRNA vakcinos", icon: "🧬", desc: "Genetinė instrukcija imunitetui.", boost: 550000000, state: "locked" },
+    { id: 94, year: 2032, price: 40000000000, name: "Sintetinis maistas", icon: "🍔", desc: "Mėsa be gyvūnų žudymo, sukurta laboratorijoje.", boost: 2200000000, state: "locked" },
+    { id: 95, year: 2042, price: 150000000000, name: "Vertikalūs ūkiai", icon: "🏢", desc: "Dangoraižiai-daržai pamaitina mega-miestus.", boost: 10000000000, state: "locked" },
+    { id: 96, year: 2055, price: 450000000000, name: "Vandenyno miestai", icon: "🌊", desc: "Plaukiojančios metropolijos kylant vandens lygiui.", boost: 35000000000, state: "locked" },
+    { id: 97, year: 2120, price: 1500000000000, name: "Smegenų sąsaja (BCI)", icon: "🔌", desc: "Tiesioginis ryšys tarp minties ir kompiuterio.", boost: 110000000000, state: "locked" },
+    { id: 98, year: 2400, price: 20000000000000, name: "Atominis surinkimas", icon: "🧱", desc: "Galimybė sukurti bet kokį daiktą iš atomų.", boost: 1200000000000, state: "locked" },
+    { id: 99, year: 4500, price: 2000000000000000, name: "Energijos kristalai", icon: "💎", desc: "Koncentruota galaktikos energija mažuose brangakmeniuose.", boost: 80000000000000, state: "locked" },
+    { id: 100, year: 10000, price: 9999999999999999, name: "Singuliarumas", icon: "♾️", desc: "Žmonija, technologija ir visata tampa viena.", boost: 999999999999999, state: "locked" }
+];
 
         // UI Nuorodos
         const uiYear = document.getElementById('ui-year');
