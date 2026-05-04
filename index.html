@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Istorijos Evoliucija: Nuo Akmens Amžiaus</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --accent: #d35400; /* Ugnies/žemės atspalvis pradžiai */
+            --card-front: #ffffff;
+            --card-back: #fdf5e6;
+            --locked-bg: #ecf0f1;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Loading Screen (Krovimosi ekranas) */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #2d3436;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            transition: opacity 0.6s ease;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255,255,255,0.2);
+            border-top: 6px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Viršutinė informacijos juosta */
+        header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .stat-group { text-align: center; }
+        .stat-group span { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; }
+        .stat-group h2 { margin: 0; font-size: 1.8rem; color: var(--accent); }
+
+        /* Pagrindinis turinys */
+        main {
+            width: 90%;
+            max-width: 1200px;
+            padding: 40px 0;
+            flex-grow: 1;
+        }
+
+        .section-title { text-align: center; margin-bottom: 30px; font-weight: 600; }
+
+        .inventory {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+            perspective: 1000px;
+        }
+
+        /* Kortos stilius */
+        .card {
+            width: 100%;
+            height: 340px;
+            background: transparent;
+            position: relative;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 16px;
+        }
+
+        /* Jei korta nupirkta, leidžiame ją vartyti */
+        .card.purchased { cursor: pointer; }
+        .card.purchased.is-flipped .card-inner { transform: rotateY(180deg); }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+        }
+
+        .card-front { background: var(--card-front); }
+        .card-back { background: var(--card-back); transform: rotateY(180deg); padding: 25px; }
+
+        .card-front .icon { font-size: 4rem; margin-bottom: 15px; }
+        .card-front h3 { margin: 0; font-size: 1.2rem; }
+        
+        .year-badge {
+            margin-top: 10px;
+            background: var(--text-muted);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .price-tag {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #27ae60;
+        }
+
+        .btn-buy {
+            margin-top: 10px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+            width: 80%;
+        }
+
+        .btn-buy:hover { background: #219150; }
+        .btn-buy:disabled { background: #bdc3c7; cursor: not-allowed; }
+
+        .card-back p { font-size: 0.9rem; line-height: 1.5; color: var(--text-main); margin-bottom: 15px; }
+        .card-back .boost { font-weight: 600; color: #d35400; background: rgba(211, 84, 0, 0.1); padding: 8px 12px; border-radius: 8px; }
+
+        /* Modalinis langas */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: 0.4s ease;
+        }
+
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content {
+            background: white; padding: 40px; border-radius: 24px; text-align: center;
+            max-width: 400px; transform: scale(0.9); transition: 0.4s;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content h2 { color: var(--accent); margin-top: 0; }
+        
+        .btn-continue {
+            margin-top: 20px; background: var(--accent); color: white; border: none;
+            padding: 10px 25px; border-radius: 20px; cursor: pointer; font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <h2>Generuojamas pasaulis...</h2>
+        <p>Keliamės į Akmens Amžių</p>
+    </div>
+
+    <header>
+        <div class="stat-group">
+            <span>Laikmetis</span>
+            <h2 id="ui-year">10000 m. pr. Kr.</h2>
+        </div>
+        <div class="stat-group">
+            <span>Turimi ištekliai</span>
+            <h2 id="ui-money">$0</h2>
+        </div>
+        <div class="stat-group">
+            <span>Pajamos</span>
+            <h2 id="ui-income">+$1/s</h2>
+        </div>
+    </header>
+
+    <main>
+        <h2 class="section-title">Technologijų Rinka ir Inventorius</h2>
+        <div class="inventory" id="inventory">
+            </div>
+    </main>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div style="font-size: 4rem; margin-bottom: 10px;">✨</div>
+            <h2>Nauja Era!</h2>
+            <p id="modal-desc">Parduotuvėje atsirado nauja technologija. Sukaupkite pakankamai išteklių jai įsigyti!</p>
+            <button class="btn-continue" onclick="closeModal()">Tęsti</button>
+        </div>
+    </div>
+
+    <script>
+        // Krovimosi ekrano pašalinimas užsikrovus
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 600);
+            }, 2000); // 2 sekundžių imitacija
+        });
+
+        // Žaidimo būsena
+        let currentYear = -10000; // Neigiamas skaičius = pr. Kr.
+        let money = 0;
+        let income = 1; 
+        let isPaused = false;
+
+        // Technologijų masyvas (state: 'locked', 'available', 'purchased')
+        const technologies = [
+            { id: 1, year: -10000, price: 10, name: "Ugnies kontrolė", icon: "🔥", desc: "Suteikė šilumą, apsaugą ir leido kepti maistą. Civilizacijos aušra.", boost: 2, state: "locked" },
+            { id: 2, year: -8000, price: 50, name: "Žemdirbystė", icon: "🌾", desc: "Perėjimas nuo klajoklių medžiotojų prie sėslaus gyvenimo būdo ir kaimų kūrimosi.", boost: 5, state: "locked" },
+            { id: 3, year: -3500, price: 250, name: "Ratas", icon: "🛞", desc: "Revoliucionizavo transportą, prekybą ir inžineriją Mesopotamijoje.", boost: 15, state: "locked" },
+            { id: 4, year: -1200, price: 1000, name: "Geležies apdirbimas", icon: "⚒️", desc: "Leido gaminti patvaresnius įrankius ir ginklus, pradėjo Geležies amžių.", boost: 40, state: "locked" },
+            { id: 5, year: 1440, price: 5000, name: "Spausdinimo presas", icon: "📖", desc: "Johanneso Gutenbergo išradimas leido masiškai platinti žinias visoje Europoje.", boost: 150, state: "locked" },
+            { id: 6, year: 1879, price: 20000, name: "Elektros lemputė", icon: "💡", desc: "Prailgino darbo ir laisvalaikio valandas, visiškai pakeitė žmonijos rutiną.", boost: 600, state: "locked" }
+        ];
+
+        // UI Nuorodos
+        const uiYear = document.getElementById('ui-year');
+        const uiMoney = document.getElementById('ui-money');
+        const uiIncome = document.getElementById('ui-income');
+        const inventoryEl = document.getElementById('inventory');
+        const modal = document.getElementById('modal');
+
+        // Formatuojame metus rodymui
+        function formatYear(y) {
+            return y < 0 ? `${Math.abs(y)} m. pr. Kr.` : `${y} m.`;
+        }
+
+        // Dinaminis laiko greitis (senovėje laikas bėga greičiau)
+        function getYearStep() {
+            if (currentYear < -3000) return 100;  // Kas sekundę po 100 metų
+            if (currentYear < 0) return 50;       // Kas sekundę po 50 metų
+            if (currentYear < 1500) return 10;    // Kas sekundę po 10 metų
+            return 1;                             // Moderniais laikais po 1 metus
+        }
+
+        function gameLoop() {
+            if (isPaused) return;
+
+            currentYear += getYearStep();
+            money += income;
+            updateUI();
+            checkUnlocks();
+            updateBuyButtons();
+        }
+
+        function updateUI() {
+            uiYear.innerText = formatYear(currentYear);
+            uiMoney.innerText = "$" + money;
+            uiIncome.innerText = "+$" + income + "/s";
+        }
+
+        // Tikriname, ar metai pasiekė technologijos atsiradimą
+        function checkUnlocks() {
+            const techsToUnlock = technologies.filter(t => currentYear >= t.year && t.state === "locked");
+            
+            techsToUnlock.forEach(tech => {
+                tech.state = "available";
+                isPaused = true; 
+                showModal(tech.name);
+                renderInventory();
+            });
+        }
+
+        // Perkame technologiją
+        function buyTech(id) {
+            const tech = technologies.find(t => t.id === id);
+            if (tech && money >= tech.price && tech.state === "available") {
+                money -= tech.price;
+                income += tech.boost;
+                tech.state = "purchased";
+                updateUI();
+                renderInventory();
+            }
+        }
+
+        // Atnaujiname mygtukų būsenas (leidžia/neleidžia pirkti pagal biudžetą)
+        function updateBuyButtons() {
+            const buttons = document.querySelectorAll('.btn-buy');
+            buttons.forEach(btn => {
+                const price = parseInt(btn.getAttribute('data-price'));
+                btn.disabled = money < price;
+            });
+        }
+
+        // Perpiešiame visą inventorių
+        function renderInventory() {
+            inventoryEl.innerHTML = ''; // Išvalome
+
+            // Rūšiuojame: naujausios atsiradusios viršuje
+            const visibleTechs = technologies.filter(t => t.state !== "locked").reverse();
+
+            visibleTechs.forEach(tech => {
+                const card = document.createElement('div');
+                card.className = `card ${tech.state}`;
+                
+                // Jei nupirkta, pridedame vartymo logiką
+                if (tech.state === "purchased") {
+                    card.addEventListener('click', () => card.classList.toggle('is-flipped'));
+                }
+
+                // Generuojame HTML pagal kortos būseną
+                let frontContent = '';
+                if (tech.state === "available") {
+                    frontContent = `
+                        <div class="icon">${tech.icon}</div>
+                        <h3>${tech.name}</h3>
+                        <div class="year-badge">Atrasta: ${formatYear(tech.year)}</div>
+                        <div class="price-tag">Kaina: $${tech.price}</div>
+                        <button class="btn-buy" data-price="${tech.price}" onclick="buyTech(${tech.id})">Pirkti</button>
+                    `;
+                } else {
+                    frontContent = `
+                        <div class="icon">${tech.icon}</div>
+                        <h3>${tech.name}</h3>
+                        <div class="year-badge" style="background: var(--accent);">Priklauso jums</div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-face card-front">
+                            ${frontContent}
+                        </div>
+                        <div class="card-face card-back">
+                            <h3>Apie technologiją</h3>
+                            <p>${tech.desc}</p>
+                            <div class="boost">Suteikė: +$${tech.boost}/s</div>
+                        </div>
+                    </div>
+                `;
+                inventoryEl.appendChild(card);
+            });
+            updateBuyButtons();
+        }
+
+        function showModal(techName) {
+            document.getElementById('modal-desc').innerHTML = `Parduotuvėje dabar pasiekiama: <strong>${techName}</strong>. Sukaupkite lėšų jai įsigyti!`;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            isPaused = false;
+        }
+
+        // Žaidimo startas
+        updateUI();
+        setInterval(gameLoop, 1000);
+
+    </script>
+</body>
+</html>
