@@ -219,6 +219,11 @@
             <span>Pajamos</span>
             <h2 id="ui-income">+$1/s</h2>
         </div>
+        <div class="admin-panel" style="position: fixed; bottom: 10px; right: 10px; z-index: 1000; display: flex; gap: 10px;">
+            <button onclick="resetGame()" style="background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; opacity: 0.7;">Reset</button>
+    
+            <button onclick="openDevMenu()" style="background: #2c3e50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; opacity: 0.7;">Dev Menu</button>
+        </div>
     </header>
 
     <main>
@@ -238,13 +243,28 @@
 
     <script>
         // Krovimosi ekrano pašalinimas užsikrovus
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loader = document.getElementById('loading-screen');
-                loader.style.opacity = '0';
-                setTimeout(() => loader.remove(), 600);
-            }, 2000); // 2 sekundžių imitacija
-        });
+        // Žaidimo startas ir krovimosi ekranas
+window.addEventListener('load', () => {
+    // 1. Pirmiausia užkrauname duomenis iš atminties
+    loadGame(); 
+    updateUI();
+
+    // 2. Pašaliname krovimosi ekraną po 2 sekundžių
+    setTimeout(() => {
+        const loader = document.getElementById('loading-screen');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 600);
+        }
+        
+        // 3. Tik kai ekranas dingsta, paleidžiame žaidimo laiką
+        setInterval(gameLoop, 1000); 
+        
+        // 4. Paleidžiame automatinį išsaugojimą kas 10 sekundžių
+        setInterval(saveGame, 10000); 
+        
+    }, 2000); 
+});
 
         // Žaidimo būsena
         let currentYear = -10000; // Neigiamas skaičius = pr. Kr.
@@ -387,9 +407,9 @@
 
         // Dinaminis laiko greitis (senovėje laikas bėga greičiau)
         function getYearStep() {
-            if (currentYear < -3000) return 100;  // Kas sekundę po 100 metų
-            if (currentYear < 0) return 50;       // Kas sekundę po 50 metų
-            if (currentYear < 1500) return 10;    // Kas sekundę po 10 metų
+            if (currentYear < -3000) return 50;  // Kas sekundę po 50 metų
+            if (currentYear < 0) return 10;       // Kas sekundę po 10 metų
+            if (currentYear < 1500) return 5;    // Kas sekundę po 5 metų
             return 1;                             // Moderniais laikais po 1 metus
         }
 
@@ -507,6 +527,101 @@
         updateUI();
         setInterval(gameLoop, 1000);
 
+        // 1. Funkcija, kuri paima visus kintamuosius ir įrašo į naršyklės atmintį
+function saveGame() {
+    const gameState = {
+        currentYear: currentYear,
+        money: money,
+        income: income,
+        // Išsaugome tik informaciją, kurios technologijos nupirktos
+        unlockedTechs: technologies.map(t => ({ id: t.id, state: t.state }))
+    };
+    localStorage.setItem('historyIdleSave', JSON.stringify(gameState));
+    console.log("Žaidimas išsaugotas!");
+}
+
+// 2. Funkcija, kuri paima duomenis iš atminties ir sugrąžina į žaidimą
+function loadGame() {
+    const savedData = localStorage.getItem('historyIdleSave');
+    if (savedData) {
+        const gameState = JSON.parse(savedData);
+        
+        currentYear = gameState.currentYear;
+        money = gameState.money;
+        income = gameState.income;
+
+        // Atnaujiname technologijų būsenas iš išsaugoto sąrašo
+        gameState.unlockedTechs.forEach(savedTech => {
+            const tech = technologies.find(t => t.id === savedTech.id);
+            if (tech) tech.state = savedTech.state;
+        });
+
+        renderInventory();
+        updateUI();
+        console.log("Progresas sėkmingai užkrautas!");
+    }
+}
+
+// 3. Ištrinti progresą (jei norėtum pradėti iš naujo)
+function resetGame() {
+    if(confirm("Ar tikrai nori ištrinti visą progresą?")) {
+        localStorage.removeItem('historyIdleSave');
+        location.reload();
+    }
+}
+    // --- RESET FUNKCIJA ---
+function resetGame() {
+    if (confirm("Ar tikrai nori ištrinti visą progresą ir pradėti nuo Akmens amžiaus?")) {
+        localStorage.removeItem('historyIdleSave'); // Ištrinam save failą
+        location.reload(); // Perkroviam puslapį
+    }
+}
+
+// --- DEVELOPER MENU LOGIKA ---
+const DEV_PASSWORD = "Zeinus"; // <--- ČIA ĮRAŠYK SAVO SLAPTAŽODĮ
+
+function openDevMenu() {
+    let password = prompt("Įveskite kūrėjo kodą:");
+    
+    if (password === DEV_PASSWORD) {
+        let action = prompt(
+            "DEVELOPER MENU:\n" +
+            "1. Pridėti pinigų ($1,000,000)\n" +
+            "2. Pakeisti metus\n" +
+            "3. Atrakinti visas esamas technologijas\n" +
+            "Įveskite pasirinkimo numerį:"
+        );
+
+        switch (action) {
+            case "1":
+                money += 1000000;
+                alert("Pridėta $1,000,000!");
+                break;
+            case "2":
+                let newYear = parseInt(prompt("Įveskite metus (pvz., 2024 arba -5000):"));
+                if (!isNaN(newYear)) {
+                    currentYear = newYear;
+                    alert("Metai pakeisti į " + newYear);
+                }
+                break;
+            case "3":
+                technologies.forEach(t => {
+                    if (currentYear >= t.year && t.state === "locked") {
+                        t.state = "available";
+                    }
+                });
+                renderInventory();
+                alert("Visos galimos technologijos atrakintos!");
+                break;
+            default:
+                alert("Veiksmas atšauktas.");
+        }
+        updateUI(); // Atnaujinam vaizdą po pakeitimų
+        saveGame();   // Iškart išsaugojam, kad nereikėtų laukti
+    } else {
+        alert("Neteisingas kodas! Prieiga uždrausta.");
+    }
+}
     </script>
 </body>
 </html>
